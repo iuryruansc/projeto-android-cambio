@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.betrybe.currencyview.common.ApiIdlingResource
 import com.betrybe.currencyview.data.api.ApiServiceClient
+import com.betrybe.currencyview.data.models.Utils
 import com.betrybe.currencyview.ui.adapters.CurrencyArrayAdapter
 import com.betrybe.currencyview.ui.adapters.CurrencyRatesAdapter
 import com.betrye.currencyview.R
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.coroutines.CoroutineScope
@@ -33,15 +33,16 @@ class MainActivity : AppCompatActivity() {
     private val mWaitingResponseState: FrameLayout by lazy { findViewById(R.id.waiting_response_state) }
     private val mCurrencyRatesState: RecyclerView by lazy { findViewById(R.id.currency_rates_state) }
     private val currencyCodesLiveData = MutableLiveData<List<String>>()
+    private val RETRY_COUNT = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         mLoadCurrencyState.visibility = View.VISIBLE
         mCurrencyRatesState.layoutManager = LinearLayoutManager(this)
 
         fetchCurrenciesSymbols()
-
 
         mSelectionLayout.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
 
@@ -52,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchCurrenciesSymbols(retryCount: Int = 3) {
+    private fun fetchCurrenciesSymbols(retryCount: Int = RETRY_COUNT) {
         CoroutineScope(Dispatchers.IO).launch {
             repeat(retryCount) { attempt ->
                 try {
@@ -65,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                         currencyCodesLiveData.postValue(responseData.symbols.values.toList())
                         val currencyCodes = responseData.symbols.keys.toList()
 
-                        runOnUiThread {
+                        withContext(Dispatchers.Main) {
                             val adapter = CurrencyArrayAdapter(
                                 this@MainActivity,
                                 R.layout.currency_item,
@@ -76,26 +77,32 @@ class MainActivity : AppCompatActivity() {
                             mLoadCurrencyState.visibility = View.GONE
                             mSelectCurrencyState.visibility = View.VISIBLE
                         }
+                        return@repeat
                     } else {
                         //Handle error
                     }
 
                     ApiIdlingResource.decrement()
-                    return@repeat
                 } catch (e: HttpException) {
                     ApiIdlingResource.decrement()
                     //Handle error
                 } catch (e: IOException) {
                     ApiIdlingResource.decrement()
+
+                    //Adding delay for the retry option
                     if (attempt < retryCount - 1) {
-                        val delayMillis = (pow(
+                        val delayMillis = (Utils.pow(
                             2, (attempt + 1)
                                 .coerceAtLeast(1)
                         ) * 1000L).coerceAtMost(5000L)
                         delay(delayMillis)
+
+                    //Function to show the error box
                     } else {
                         withContext(Dispatchers.Main) {
-                            showSymbolsErrorDialog(e.message)
+                            Utils.showSymbolsErrorDialog(this@MainActivity, e.message) {
+                                fetchCurrenciesSymbols()
+                            }
                         }
                     }
                 }
@@ -103,20 +110,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchCurrenciesRates(retryCount: Int = 3) {
+    private fun fetchCurrenciesRates(retryCount: Int = RETRY_COUNT) {
         CoroutineScope(Dispatchers.IO).launch {
             repeat(retryCount) { attempt ->
                 try {
                     ApiIdlingResource.increment()
 
                     val symbol = mSelectionLayout.text.toString()
-                    val responseCurrencyRate = mApiService.getLatestRates(symbol)
+                    val currencyRateResponse = mApiService.getLatestRates(symbol)
 
                     val codes = currencyCodesLiveData.value!!
 
-                    if (responseCurrencyRate.isSuccessful) {
-                        val rates = responseCurrencyRate.body()?.rates
-                        runOnUiThread {
+                    if (currencyRateResponse.isSuccessful) {
+                        val rates = currencyRateResponse.body()?.rates
+                        withContext(Dispatchers.Main) {
                             if (!rates.isNullOrEmpty()) {
 
                                 val ratesAdapter = CurrencyRatesAdapter(rates, codes)
@@ -125,11 +132,11 @@ class MainActivity : AppCompatActivity() {
 
                                 mWaitingResponseState.visibility = View.GONE
                                 mCurrencyRatesState.visibility = View.VISIBLE
-                                return@runOnUiThread
                             } else {
                                 //Handle empty
                             }
                         }
+                        return@repeat
                     } else {
                         //Handle error
                     }
@@ -140,57 +147,20 @@ class MainActivity : AppCompatActivity() {
                 } catch (e: IOException) {
                     ApiIdlingResource.decrement()
                     if (attempt < retryCount - 1) {
-                        val delayMillis = (pow(
+                        val delayMillis = (Utils.pow(
                             2, (attempt + 1)
                                 .coerceAtLeast(1)
                         ) * 1000L).coerceAtMost(5000L)
                         delay(delayMillis)
                     } else {
                         withContext(Dispatchers.Main) {
-                            showCurrenciesErrorDialog(e.message)
+                            Utils.showCurrenciesErrorDialog(this@MainActivity, e.message) {
+                                fetchCurrenciesRates()
+                            }
                         }
                     }
                 }
             }
         }
-    }
-
-    private fun showCurrenciesErrorDialog(errorMessage: String?) {
-        MaterialAlertDialogBuilder(this@MainActivity)
-            .setTitle("Erro")
-            .setMessage("Falha ao carregar conversões da moeda escolhida... $errorMessage")
-            .setPositiveButton("Retry") { dialog, _ ->
-                dialog.dismiss()
-                fetchCurrenciesRates()
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-                finish()
-            }
-            .show()
-    }
-
-    private fun showSymbolsErrorDialog(errorMessage: String?) {
-        MaterialAlertDialogBuilder(this@MainActivity)
-            .setTitle("Error")
-            .setMessage("Failed to load currencies... $errorMessage")
-            .setPositiveButton("Retry") { dialog, _ ->
-                dialog.dismiss()
-                fetchCurrenciesSymbols()
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-                finish()
-            }
-            .show()
-    }
-
-    private fun pow(base: Long, exponent: Int): Long {
-        if (exponent == 0) return 1
-        var result = base
-        for (i in 2..exponent) {
-            result *= base
-        }
-        return result
     }
 }
