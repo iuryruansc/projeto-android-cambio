@@ -9,7 +9,7 @@ import java.io.IOException
 class CurrencyRepository(
     private val apiService: ApiService,
     private val currencyCodesLiveData: MutableLiveData<List<String>>
-){
+) {
     suspend fun fetchCurrenciesSymbols(): Result<List<String>> {
         return try {
             RetryHelper.retry {

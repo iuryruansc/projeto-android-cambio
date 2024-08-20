@@ -5,29 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.TextView
-import com.betrye.currencyview.R
+import com.betrye.currencyview.databinding.CurrencyItemBinding
 
 class CurrencyArrayAdapter(context: Context, resource: Int, objects: List<String>) :
     ArrayAdapter<String>(context, resource, objects) {
 
-    private class ViewHolder {
-        lateinit var textView: TextView
+    class ViewHolder(private val binding: CurrencyItemBinding) {
+        fun bind(currency: String) {
+            binding.currencyItemText.text = currency // Bind the currency to the TextView
+        }
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view: View
         val viewHolder: ViewHolder
         if (convertView == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.currency_item, parent, false)
-            viewHolder = ViewHolder()
-            viewHolder.textView = view.findViewById(R.id.currency_item_text)
+            val binding = CurrencyItemBinding.inflate(LayoutInflater.from(context), parent, false)
+            viewHolder = ViewHolder(binding)
+            view = binding.root
             view.tag = viewHolder
         } else {
             view = convertView
             viewHolder = view.tag as ViewHolder
         }
-        viewHolder.textView.text = getItem(position)
+        viewHolder.bind(getItem(position)!!) // Bind the currency to the ViewHolder
         return view
     }
 

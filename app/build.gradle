@@ -41,6 +41,10 @@ android {
         config.setFrom("detekt.yml")
         basePath = projectDir.absolutePath
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {

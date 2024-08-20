@@ -3,11 +3,9 @@ package com.betrybe.currencyview.ui.views.activities
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.betrybe.currencyview.common.ApiIdlingResource
 import com.betrybe.currencyview.data.api.ApiServiceClient
 import com.betrybe.currencyview.data.repositories.CurrencyRepository
@@ -16,8 +14,7 @@ import com.betrybe.currencyview.ui.adapters.CurrencyRatesAdapter
 import com.betrybe.currencyview.utils.DialogBoxUtils
 import com.betrybe.currencyview.utils.Result
 import com.betrye.currencyview.R
-import com.google.android.material.textfield.MaterialAutoCompleteTextView
-import com.google.android.material.textview.MaterialTextView
+import com.betrye.currencyview.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,33 +22,28 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+
     private val apiService = ApiServiceClient.instance
     private val currencyCodesLiveData = MutableLiveData<List<String>>()
     private val currencyRepository = CurrencyRepository(apiService, currencyCodesLiveData)
 
-    //Layout Views
-    private val mSelectionLayout: MaterialAutoCompleteTextView by lazy { findViewById(R.id.currency_selection_input_layout) }
-    private val mLoadCurrencyState: MaterialTextView by lazy { findViewById(R.id.load_currency_state) }
-    private val mSelectCurrencyState: MaterialTextView by lazy { findViewById(R.id.select_currency_state) }
-    private val mWaitingResponseState: FrameLayout by lazy { findViewById(R.id.waiting_response_state) }
-    private val mCurrencyRatesState: RecyclerView by lazy { findViewById(R.id.currency_rates_state) }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        mLoadCurrencyState.visibility = View.VISIBLE
-        mCurrencyRatesState.layoutManager = LinearLayoutManager(this)
+        binding.loadCurrencyState.visibility = View.VISIBLE
+        binding.currencyRatesState.layoutManager = LinearLayoutManager(this)
 
         //Start the function to get the dropdown menu items
         currenciesSymbols()
 
         //Apply the function do get the currency rates to the menu items
-        mSelectionLayout.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
+        binding.currencySelectionInputLayout.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
 
-            mSelectCurrencyState.visibility = View.GONE
-            mWaitingResponseState.visibility = View.VISIBLE
+            binding.selectCurrencyState.visibility = View.GONE
+            binding.waitingResponseState.visibility = View.VISIBLE
             currenciesRates()
         }
     }
@@ -84,7 +76,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun currenciesRates() {
-        val symbol = mSelectionLayout.text.toString() //Getting which item was selected
+        val symbol = binding.currencySelectionInputLayout.text.toString() //Getting which item was selected
         val codes = currencyCodesLiveData.value!! //Getting the country name for the menu items
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -119,20 +111,20 @@ class MainActivity : AppCompatActivity() {
             R.layout.currency_item,
             currencyCodes
         )
-        mSelectionLayout.setAdapter(adapter)
+        binding.currencySelectionInputLayout.setAdapter(adapter)
 
-        mLoadCurrencyState.visibility = View.GONE
-        mSelectCurrencyState.visibility = View.VISIBLE
+        binding.loadCurrencyState.visibility = View.GONE
+        binding.selectCurrencyState.visibility = View.VISIBLE
     }
 
     //Updating the recycler view with the currency rates
     private fun updateRecyclerView(rates: Map<String, String>, codes: List<String>) {
         val ratesAdapter = CurrencyRatesAdapter(rates, codes)
-        mCurrencyRatesState.adapter = ratesAdapter
+        binding.currencyRatesState.adapter = ratesAdapter
         ratesAdapter.notifyDataSetChanged()
 
-        mWaitingResponseState.visibility = View.GONE
-        mCurrencyRatesState.visibility = View.VISIBLE
+        binding.waitingResponseState.visibility = View.GONE
+        binding.currencyRatesState.visibility = View.VISIBLE
     }
 
     //Creating the try/cancel dialog box at the start of the app
