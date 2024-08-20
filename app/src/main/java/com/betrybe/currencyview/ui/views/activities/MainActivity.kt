@@ -10,24 +10,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.betrybe.currencyview.common.ApiIdlingResource
 import com.betrybe.currencyview.data.api.ApiServiceClient
-import com.betrybe.currencyview.ui.utils.RetryHelper
-import com.betrybe.currencyview.ui.utils.DialogUtils
+import com.betrybe.currencyview.data.repositories.CurrencyRepository
 import com.betrybe.currencyview.ui.adapters.CurrencyArrayAdapter
 import com.betrybe.currencyview.ui.adapters.CurrencyRatesAdapter
+import com.betrybe.currencyview.utils.DialogBoxUtils
+import com.betrybe.currencyview.utils.Result
 import com.betrye.currencyview.R
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textview.MaterialTextView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
     private val apiService = ApiServiceClient.instance
     private val currencyCodesLiveData = MutableLiveData<List<String>>()
+    private val currencyRepository = CurrencyRepository(apiService, currencyCodesLiveData)
 
     //Layout Views
     private val mSelectionLayout: MaterialAutoCompleteTextView by lazy { findViewById(R.id.currency_selection_input_layout) }
@@ -44,55 +44,37 @@ class MainActivity : AppCompatActivity() {
         mLoadCurrencyState.visibility = View.VISIBLE
         mCurrencyRatesState.layoutManager = LinearLayoutManager(this)
 
-        //Function to get the dropdown menu items
-        fetchCurrenciesSymbols()
+        //Start the function to get the dropdown menu items
+        currenciesSymbols()
 
-        //Function do get the currency rates for the selected item
+        //Apply the function do get the currency rates to the menu items
         mSelectionLayout.onItemClickListener = AdapterView.OnItemClickListener { _, _, _, _ ->
 
             mSelectCurrencyState.visibility = View.GONE
             mWaitingResponseState.visibility = View.VISIBLE
-            fetchCurrenciesRates()
-
+            currenciesRates()
         }
     }
 
-    private fun fetchCurrenciesSymbols() {
+
+    private fun currenciesSymbols() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                RetryHelper.retry {
-                    ApiIdlingResource.increment()
-                    val responseCurrencySymbol = apiService.getSymbols()
+                ApiIdlingResource.increment()
 
-                    if (responseCurrencySymbol.isSuccessful) {
-                        val responseData = responseCurrencySymbol.body()
+                //Getting the symbols from the API
+                val result = currencyRepository.fetchCurrenciesSymbols()
 
-                        if (responseData != null) {
-                            currencyCodesLiveData.postValue(responseData.symbols.values.toList())
-                            val currencyCodes = responseData.symbols.keys.toList()
-
-                            withContext(Dispatchers.Main) {
-                                val adapter = CurrencyArrayAdapter(
-                                    this@MainActivity,
-                                    R.layout.currency_item,
-                                    currencyCodes
-                                )
-                                mSelectionLayout.setAdapter(adapter)
-
-                                mLoadCurrencyState.visibility = View.GONE
-                                mSelectCurrencyState.visibility = View.VISIBLE
-                            }
-                        } else {
-                            //Handle empty
-                        }
-                    } else {
-                        throw IOException("API request failed")
-                    }
-                }
-            } catch (e: Exception) {
+                //Switching to the main thread to update the UI
                 withContext(Dispatchers.Main) {
-                    DialogUtils.showSymbolsErrorDialog(this@MainActivity, e.message) {
-                        fetchCurrenciesSymbols()
+                    when (result) {
+                        is Result.Success -> {
+                            updateDropDownMenu(result.data)
+                        }
+
+                        is Result.Failure -> {
+                            showSymbolsErrorDialog(result.exception.message)
+                        }
                     }
                 }
             } finally {
@@ -101,43 +83,67 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchCurrenciesRates() {
+    private fun currenciesRates() {
         val symbol = mSelectionLayout.text.toString() //Getting which item was selected
-        val codes = currencyCodesLiveData.value!! //Getting the country name for the selected code
+        val codes = currencyCodesLiveData.value!! //Getting the country name for the menu items
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                RetryHelper.retry {
-                    ApiIdlingResource.increment()
-                    val currencyRateResponse = apiService.getLatestRates(symbol)
+                ApiIdlingResource.increment()
 
-                    if (currencyRateResponse.isSuccessful) {
-                        val rates = currencyRateResponse.body()?.rates
-                        withContext(Dispatchers.Main) {
-                            if (!rates.isNullOrEmpty()) {
-                                val ratesAdapter = CurrencyRatesAdapter(rates, codes)
-                                mCurrencyRatesState.adapter = ratesAdapter
-                                ratesAdapter.notifyDataSetChanged()
+                //Getting the rates from the API
+                val result = currencyRepository.fetchCurrencyRates(symbol)
 
-                                mWaitingResponseState.visibility = View.GONE
-                                mCurrencyRatesState.visibility = View.VISIBLE
-                            } else {
-                                //Handle empty
-                            }
-                        }
-                    } else {
-                        throw IOException("API request failed")
-                    }
-                }
-            } catch (e: Exception) {
+                //Switching to the main thread to update the UI
                 withContext(Dispatchers.Main) {
-                    DialogUtils.showCurrenciesErrorDialog(this@MainActivity, e.message) {
-                        fetchCurrenciesRates()
+                    when (result) {
+                        is Result.Success -> {
+                            updateRecyclerView(result.data, codes)
+                        }
+
+                        is Result.Failure -> {
+                            showCurrenciesErrorDialog(result.exception.message)
+                        }
                     }
                 }
             } finally {
                 ApiIdlingResource.decrement()
             }
         }
+    }
+
+    //Updating the dropdown menu with the currency codes
+    private fun updateDropDownMenu(currencyCodes: List<String>) {
+        val adapter = CurrencyArrayAdapter(
+            this@MainActivity,
+            R.layout.currency_item,
+            currencyCodes
+        )
+        mSelectionLayout.setAdapter(adapter)
+
+        mLoadCurrencyState.visibility = View.GONE
+        mSelectCurrencyState.visibility = View.VISIBLE
+    }
+
+    //Updating the recycler view with the currency rates
+    private fun updateRecyclerView(rates: Map<String, String>, codes: List<String>) {
+        val ratesAdapter = CurrencyRatesAdapter(rates, codes)
+        mCurrencyRatesState.adapter = ratesAdapter
+        ratesAdapter.notifyDataSetChanged()
+
+        mWaitingResponseState.visibility = View.GONE
+        mCurrencyRatesState.visibility = View.VISIBLE
+    }
+
+    //Creating the try/cancel dialog box at the start of the app
+    private val showSymbolsErrorDialog: (String?) -> Unit = { errorMessage ->
+        DialogBoxUtils.showSymbolsErrorDialog(this, errorMessage)
+        { currenciesSymbols() }
+    }
+
+    //Creating the try/cancel dialog box to the dropdown items
+    private val showCurrenciesErrorDialog: (String?) -> Unit = { errorMessage ->
+        DialogBoxUtils.showCurrenciesErrorDialog(this, errorMessage)
+        { currenciesRates() }
     }
 }

@@ -1,15 +1,14 @@
-package com.betrybe.currencyview.ui.utils
+package com.betrybe.currencyview.utils
 
 import android.app.Activity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-object DialogUtils {
+object DialogBoxUtils {
 
-    //Creating the try/cancel dialog box to the dropdown items
-    fun showCurrenciesErrorDialog(activity: Activity, errorMessage: String?, retryAction: () -> Unit) {
+    fun showSymbolsErrorDialog(activity: Activity, errorMessage: String?, retryAction: () -> Unit) {
         MaterialAlertDialogBuilder(activity)
-            .setTitle("Erro")
-            .setMessage("Falha ao carregar conversões da moeda escolhida... $errorMessage")
+            .setTitle("Error")
+            .setMessage("Failed to load currencies... $errorMessage")
             .setPositiveButton("Retry") { dialog, _ ->
                 dialog.dismiss()
                 retryAction()
@@ -21,11 +20,10 @@ object DialogUtils {
             .show()
     }
 
-    //Creating the try/cancel dialog box at the start of the app
-    fun showSymbolsErrorDialog(activity: Activity, errorMessage: String?, retryAction: () -> Unit) {
+    fun showCurrenciesErrorDialog(activity: Activity, errorMessage: String?, retryAction: () -> Unit) {
         MaterialAlertDialogBuilder(activity)
             .setTitle("Error")
-            .setMessage("Failed to load currencies... $errorMessage")
+            .setMessage("Failed to load the currency conversion... $errorMessage")
             .setPositiveButton("Retry") { dialog, _ ->
                 dialog.dismiss()
                 retryAction()

@@ -1,4 +1,4 @@
-package com.betrybe.currencyview.ui.utils
+package com.betrybe.currencyview.utils
 
 import kotlinx.coroutines.delay
 import retrofit2.HttpException
@@ -22,8 +22,10 @@ class RetryHelper {
                     //Handle HTTP Exception
                 } catch (e: IOException) {
                     if (attempt < retryCount - 1) {
-                        val delayMillis = (DialogUtils.pow(2, (attempt + 1)
-                                .coerceAtLeast(1)) * 1000L)
+                        val delayMillis = (DialogBoxUtils.pow(
+                            2, (attempt + 1)
+                                .coerceAtLeast(1)
+                        ) * 1000L)
                                 .coerceAtMost(MAX_DELAY_MILLIS)
                         delay(delayMillis)
                     } else {
