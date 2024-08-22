@@ -26,7 +26,7 @@
             android:id="@+id/application_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/conversor_de_moedas"
+            android:text="@string/main_currency_converter"
             android:textAlignment="center"
             android:textSize="16sp" />
 
@@ -36,14 +36,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="@string/moeda">
+            android:hint="@string/main_currency">
 
             <AutoCompleteTextView
                 android:id="@+id/currency_selection_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                tools:ignore="LabelFor"/>
+                tools:ignore="LabelFor" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/carregando_moedas"
+            android:text="@string/main_load_currency"
             android:textSize="16sp"
             android:visibility="gone" />
 
@@ -61,10 +61,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="24sp"
-            android:text="@string/selecione_uma_moeda"
-            android:textSize="16sp"
             android:gravity="center"
-            android:visibility="gone"/>
+            android:text="@string/main_select_currency"
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <FrameLayout
             android:id="@+id/waiting_response_state"

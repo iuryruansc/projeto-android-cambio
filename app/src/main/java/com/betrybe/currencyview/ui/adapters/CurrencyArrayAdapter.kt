@@ -10,12 +10,14 @@ import com.betrye.currencyview.databinding.CurrencyItemBinding
 class CurrencyArrayAdapter(context: Context, resource: Int, objects: List<String>) :
     ArrayAdapter<String>(context, resource, objects) {
 
+    // ViewHolder class for each item in the dropdown menu
     class ViewHolder(private val binding: CurrencyItemBinding) {
         fun bind(currency: String) {
             binding.currencyItemText.text = currency // Bind the currency to the TextView
         }
     }
 
+    // Inflating the layout for each item and creating a ViewHolder
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view: View
         val viewHolder: ViewHolder
