@@ -1,4 +1,4 @@
-package com.betrybe.currencyview.utils
+package com.betrybe.currencyview.common.util
 
 import android.app.Activity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -9,6 +9,7 @@ object DialogBoxUtils {
         MaterialAlertDialogBuilder(activity)
             .setTitle("Error")
             .setMessage("Failed to load currencies... $errorMessage")
+            .setCancelable(false)
             .setPositiveButton("Retry") { dialog, _ ->
                 dialog.dismiss()
                 retryAction()
@@ -24,6 +25,7 @@ object DialogBoxUtils {
         MaterialAlertDialogBuilder(activity)
             .setTitle("Error")
             .setMessage("Failed to load the currency conversion... $errorMessage")
+            .setCancelable(false)
             .setPositiveButton("Retry") { dialog, _ ->
                 dialog.dismiss()
                 retryAction()

@@ -1,4 +1,4 @@
-package com.betrybe.currencyview.common
+package com.betrybe.currencyview.common.idling
 
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.idling.CountingIdlingResource

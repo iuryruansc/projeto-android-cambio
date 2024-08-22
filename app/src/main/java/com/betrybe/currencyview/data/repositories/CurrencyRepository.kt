@@ -2,14 +2,15 @@ package com.betrybe.currencyview.data.repositories
 
 import androidx.lifecycle.MutableLiveData
 import com.betrybe.currencyview.data.api.ApiService
-import com.betrybe.currencyview.utils.Result
-import com.betrybe.currencyview.utils.RetryHelper
+import com.betrybe.currencyview.common.util.Result
+import com.betrybe.currencyview.common.util.RetryHelper
 import java.io.IOException
 
 class CurrencyRepository(
     private val apiService: ApiService,
     private val currencyCodesLiveData: MutableLiveData<List<String>>
 ) {
+    // Function to fetch currency symbols
     suspend fun fetchCurrenciesSymbols(): Result<List<String>> {
         return try {
             RetryHelper.retry {
@@ -38,7 +39,9 @@ class CurrencyRepository(
         }
     }
 
+    // Function to fetch currency rates
     suspend fun fetchCurrencyRates(symbol: String): Result<Map<String, String>> {
+
         return try {
             RetryHelper.retry {
                 val currencyRateResponse = apiService.getLatestRates(symbol)

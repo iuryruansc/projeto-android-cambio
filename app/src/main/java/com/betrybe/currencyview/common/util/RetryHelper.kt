@@ -1,4 +1,4 @@
-package com.betrybe.currencyview.utils
+package com.betrybe.currencyview.common.util
 
 import kotlinx.coroutines.delay
 import retrofit2.HttpException
