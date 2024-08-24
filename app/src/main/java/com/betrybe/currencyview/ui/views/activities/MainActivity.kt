@@ -5,13 +5,17 @@ import android.view.View
 import android.widget.AdapterView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.betrybe.currencyview.common.util.DialogBoxUtils
 import com.betrybe.currencyview.ui.adapters.CurrencyArrayAdapter
 import com.betrybe.currencyview.ui.adapters.CurrencyRatesAdapter
 import com.betrybe.currencyview.ui.viewmodels.MainActivityViewModel
-import com.betrybe.currencyview.common.util.DialogBoxUtils
 import com.betrye.currencyview.R
 import com.betrye.currencyview.databinding.ActivityMainBinding
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,29 +34,25 @@ class MainActivity : AppCompatActivity() {
         viewModel.currenciesSymbols()
 
         //Observing the currency symbols live data from view model
-        viewModel.currencyCodesLiveData.observe(this) { currencyCodes ->
-            updateDropDownMenu(currencyCodes)
+        viewModel.currencySymbols.observe(this) { currencySymbols ->
+            updateDropDownMenu(currencySymbols)
         }
 
         //Observing the currency rates live data from view model
-        viewModel.currencyRatesLiveData.observe(this) { currencyRates ->
-           if (currencyRates != null ) {
-               val codes = viewModel.currencyCodesLiveData.value!!
-               updateRecyclerView(currencyRates, codes)
-           }
-        }
-
-        //Observing the symbols error event from view model
-        viewModel.symbolErrorLiveData.observe(this) { errorMessage ->
-            if (errorMessage != null) {
-                showSymbolsErrorDialog(errorMessage)
+        viewModel.currencyRates.observe(this) { currencyRates ->
+            if (currencyRates != null) {
+                updateRecyclerView(currencyRates, viewModel.currencyFullName.value!!)
             }
         }
 
-        //Observing the currency rates error event from view model
-        viewModel.currencyRatesErrorLiveData.observe(this) { errorMessage ->
-            if ( errorMessage != null) {
-                showCurrenciesErrorDialog(errorMessage)
+        //Observing the error state flow from view model
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isErrorOccurred.collect { isErrorOccurred ->
+                    if (isErrorOccurred) {
+                        showErrorDialog()
+                    }
+                }
             }
         }
 
@@ -91,15 +91,9 @@ class MainActivity : AppCompatActivity() {
         binding.currencyRatesState.visibility = View.VISIBLE
     }
 
-    //Creating the try/cancel dialog box at the start of the app
-    private val showSymbolsErrorDialog: (String?) -> Unit = { errorMessage ->
-        DialogBoxUtils.showSymbolsErrorDialog(this, errorMessage)
+    //Creating the error dialog box
+    private fun showErrorDialog() {
+        DialogBoxUtils.errorDialogBuilder(this, viewModel.errorMessage.value)
         { viewModel.currenciesSymbols() }
-    }
-
-    //Creating the try/cancel dialog box to the dropdown items
-    private val showCurrenciesErrorDialog: (String?) -> Unit = { errorMessage ->
-        DialogBoxUtils.showCurrenciesErrorDialog(this, errorMessage)
-        { viewModel.currenciesRates(selectedSymbol) }
     }
 }

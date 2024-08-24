@@ -1,7 +1,7 @@
 package com.betrybe.currencyview.data.api
 
-import com.betrybe.currencyview.data.models.CurrencyRateResponse
-import com.betrybe.currencyview.data.models.CurrencySymbolResponse
+import com.betrybe.currencyview.data.api.models.CurrencyRateResponse
+import com.betrybe.currencyview.data.api.models.CurrencySymbolResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

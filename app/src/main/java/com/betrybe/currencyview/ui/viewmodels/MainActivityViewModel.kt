@@ -3,62 +3,64 @@ package com.betrybe.currencyview.ui.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.betrybe.currencyview.common.idling.ApiIdlingResource
-import com.betrybe.currencyview.data.api.ApiServiceClient
-import com.betrybe.currencyview.data.repositories.CurrencyRepository
+import com.betrybe.currencyview.data.repository.CurrencyRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import com.betrybe.currencyview.common.util.Result
 
-class MainActivityViewModel: ViewModel() {
+class MainActivityViewModel : ViewModel() {
 
-    private val apiService = ApiServiceClient.instance
+    private val mCurrencyRepository = CurrencyRepository()
 
-    private var _currencyCodesLiveData = MutableLiveData<List<String>>()
-    val currencyCodesLiveData: LiveData<List<String>>
-        get() = _currencyCodesLiveData
+    private var _currencySymbols = MutableLiveData<List<String>>()
+    val currencySymbols: LiveData<List<String>>
+        get() = _currencySymbols
 
-    private var _symbolErrorLiveData = MutableLiveData<String?>()
-    val symbolErrorLiveData: LiveData<String?>
-        get() = _symbolErrorLiveData
+    private var _currencyFullName = MutableLiveData<List<String>>()
+    val currencyFullName: LiveData<List<String>>
+        get() = _currencyFullName
 
-    private var _currencyRatesErrorLiveData = MutableLiveData<String?>()
-    val currencyRatesErrorLiveData: LiveData<String?>
-        get() = _currencyRatesErrorLiveData
+    private var _currencyRates = MutableLiveData<Map<String, String>>()
+    val currencyRates: LiveData<Map<String, String>>
+        get() = _currencyRates
 
-    private var _currencyRatesLiveData = MutableLiveData<Map<String, String>>()
-    val currencyRatesLiveData: LiveData<Map<String, String>>
-        get() = _currencyRatesLiveData
+    private var _isErrorOccurred = MutableStateFlow(false)
+    val isErrorOccurred: MutableStateFlow<Boolean>
+        get() = _isErrorOccurred
 
-    private val currencyRepository = CurrencyRepository(apiService, _currencyCodesLiveData)
+    private var _errorMessage = MutableLiveData("")
+    val errorMessage: LiveData<String>
+        get() = _errorMessage
 
+    // Function to update currency symbols
     fun currenciesSymbols() {
-       CoroutineScope(Dispatchers.IO).launch {
-            try {
-                ApiIdlingResource.increment()
-                when (val result = currencyRepository.fetchCurrenciesSymbols()) {
-                    is Result.Success -> _currencyCodesLiveData.postValue(result.data)
-                    is Result.Failure -> _symbolErrorLiveData.postValue(result.exception.message)
-                }
-            } finally {
-                ApiIdlingResource.decrement()
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = mCurrencyRepository.getCurrencySymbol()
+            if (response.success) {
+                val currency = response.data!!
+                _currencySymbols.postValue(currency.currencyType.keys.toList())
+                _currencyFullName.postValue(currency.currencyType.values.toList())
+                isErrorOccurred.value = false
+            } else {
+                _errorMessage.postValue(response.message)
+                isErrorOccurred.value = true
             }
         }
     }
 
+    // Function to update currency rates
     fun currenciesRates(symbol: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            try {
-                ApiIdlingResource.increment()
-                when (val result = currencyRepository.fetchCurrencyRates(symbol)) {
-                    is Result.Success -> _currencyRatesLiveData.postValue(result.data)
-                    is Result.Failure -> _currencyRatesErrorLiveData.postValue(result.exception.message)
-                }
-            } finally {
-                ApiIdlingResource.decrement()
+            val response = mCurrencyRepository.getCurrencyRate(symbol)
+            if (response.success) {
+                val rates = response.data!!
+                _currencyRates.postValue(rates.currencyType)
+                isErrorOccurred.value = false
+            } else {
+                _errorMessage.postValue(response.message)
+                isErrorOccurred.value = true
             }
         }
     }
-
 }

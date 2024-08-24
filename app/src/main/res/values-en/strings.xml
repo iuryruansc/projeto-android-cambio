@@ -5,4 +5,7 @@
     <string name="main_select_currency">Choose a currency.</string>
     <string name="main_currency_converter">Currency Converter</string>
     <string name="main_connection_error">Connection error</string>
+    <string name="error_title">Error</string>
+    <string name="error_retry">Retry</string>
+    <string name="error_cancel">Cancel</string>
 </resources>
