@@ -3,6 +3,7 @@ package com.betrybe.currencyview.data.repository
 import com.betrybe.currencyview.data.models.CurrencyType
 import com.betrybe.currencyview.data.models.Response
 import com.betrybe.currencyview.data.network.CurrencyDataSource
+import com.betrye.currencyview.R
 
 class CurrencyRepository {
 
@@ -21,7 +22,7 @@ class CurrencyRepository {
         } catch (ex: Exception) {
             return Response(false, ex.message.orEmpty(), null)
         }
-        return Response(false, "Um erro ocorrreu", null)
+        return Response(false, R.string.error_message.toString(), null)
     }
 
     suspend fun getCurrencyRate(symbol: String): Response<CurrencyType> {
@@ -36,6 +37,6 @@ class CurrencyRepository {
         } catch (ex: Exception) {
             return Response(false, ex.message.orEmpty(), null)
         }
-        return Response(false, "Um erro ocorrreu", null)
+        return Response(false, R.string.error_message.toString(), null)
     }
 }
