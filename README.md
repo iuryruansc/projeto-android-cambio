@@ -29,6 +29,5 @@ This Android application allows users to convert between various currencies.
    <br>Click the "Run" button in your IDE.
 
 ## Screenshots
-<br>
 | <img src="./assets/project_wm_1.png" height="450" alt="initial interface screenshot"/> | <img src="./assets/project_wm_2.png" height="450" alt="menu list screenshot"/> | <img src="./assets/project_wm_3.png" height="450" alt="converted currency screenshot"/> |
 |:---:| :---: | :---: |
