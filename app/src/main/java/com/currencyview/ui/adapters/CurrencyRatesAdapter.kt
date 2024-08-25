@@ -1,4 +1,4 @@
-package com.betrybe.currencyview.ui.adapters
+package com.currencyview.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -24,7 +24,9 @@ class CurrencyRatesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RatesViewHolder {
         val binding =
             CurrencyRecycleItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return RatesViewHolder(binding)
+        return RatesViewHolder(
+            binding
+        )
     }
 
     override fun getItemCount(): Int = rates.size

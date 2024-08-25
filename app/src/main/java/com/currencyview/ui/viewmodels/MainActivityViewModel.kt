@@ -1,9 +1,9 @@
-package com.betrybe.currencyview.ui.viewmodels
+package com.currencyview.ui.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.betrybe.currencyview.data.repository.CurrencyRepository
+import com.currencyview.data.repository.CurrencyRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

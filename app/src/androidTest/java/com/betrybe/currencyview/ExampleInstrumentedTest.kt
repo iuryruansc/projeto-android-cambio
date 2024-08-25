@@ -1,4 +1,4 @@
-package br.com.mytrybe.bottomnavigationexample
+package com.betrybe.currencyview
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

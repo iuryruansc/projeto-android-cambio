@@ -1,4 +1,4 @@
-package com.betrybe.currencyview.common.util
+package com.currencyview.common.util
 
 import android.app.Activity
 import com.betrye.currencyview.R
@@ -21,15 +21,5 @@ object DialogBoxUtils {
                 activity.finish()
             }
             .show()
-    }
-
-    //Calculating the delay time to each try
-    fun pow(base: Long, exponent: Int): Long {
-        if (exponent == 0) return 1
-        var result = base
-        for (i in 2..exponent) {
-            result *= base
-        }
-        return result
     }
 }

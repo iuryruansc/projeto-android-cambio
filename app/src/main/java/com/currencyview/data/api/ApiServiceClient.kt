@@ -1,4 +1,4 @@
-package com.betrybe.currencyview.data.api
+package com.currencyview.data.api
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

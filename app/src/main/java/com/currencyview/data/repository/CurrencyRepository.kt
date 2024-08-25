@@ -1,9 +1,9 @@
-package com.betrybe.currencyview.data.repository
+package com.currencyview.data.repository
 
-import com.betrybe.currencyview.data.models.CurrencyType
-import com.betrybe.currencyview.data.models.Response
-import com.betrybe.currencyview.data.network.CurrencyDataSource
 import com.betrye.currencyview.R
+import com.currencyview.data.models.CurrencyType
+import com.currencyview.data.models.Response
+import com.currencyview.data.network.CurrencyDataSource
 
 class CurrencyRepository {
 
@@ -18,7 +18,6 @@ class CurrencyRepository {
                 )
                 return Response(true, "", currencySymbols)
             }
-
         } catch (ex: Exception) {
             return Response(false, ex.message.orEmpty(), null)
         }

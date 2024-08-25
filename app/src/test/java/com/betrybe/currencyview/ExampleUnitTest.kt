@@ -1,4 +1,4 @@
-package br.com.mytrybe.bottomnavigationexample
+package com.betrybe.currencyview
 
 import org.junit.Test
 

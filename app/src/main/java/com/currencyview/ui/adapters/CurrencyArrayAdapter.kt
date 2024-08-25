@@ -1,4 +1,4 @@
-package com.betrybe.currencyview.ui.adapters
+package com.currencyview.ui.adapters
 
 import android.content.Context
 import android.view.LayoutInflater

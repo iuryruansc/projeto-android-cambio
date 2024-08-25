@@ -1,4 +1,4 @@
-package com.betrybe.currencyview.ui.views.activities
+package com.currencyview.ui.views.activities
 
 import android.os.Bundle
 import android.view.View
@@ -9,19 +9,19 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.betrybe.currencyview.common.util.DialogBoxUtils
-import com.betrybe.currencyview.ui.adapters.CurrencyArrayAdapter
-import com.betrybe.currencyview.ui.adapters.CurrencyRatesAdapter
-import com.betrybe.currencyview.ui.viewmodels.MainActivityViewModel
 import com.betrye.currencyview.R
 import com.betrye.currencyview.databinding.ActivityMainBinding
+import com.currencyview.common.util.DialogBoxUtils
+import com.currencyview.ui.adapters.CurrencyArrayAdapter
+import com.currencyview.ui.adapters.CurrencyRatesAdapter
+import com.currencyview.ui.viewmodels.MainActivityViewModel
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainActivityViewModel by viewModels()
-    private var selectedSymbol: String = ""
+    private var selectedCode: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,11 +59,11 @@ class MainActivity : AppCompatActivity() {
         //Apply the function do get the currency rates to the menu items
         binding.currencySelectionInputLayout.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, _, _ ->
-                selectedSymbol = binding.currencySelectionInputLayout.text.toString()
+                selectedCode = binding.currencySelectionInputLayout.text.toString()
 
                 binding.selectCurrencyState.visibility = View.GONE
                 binding.waitingResponseState.visibility = View.VISIBLE
-                viewModel.currenciesRates(selectedSymbol)
+                viewModel.currenciesRates(selectedCode)
             }
     }
 
@@ -83,7 +83,8 @@ class MainActivity : AppCompatActivity() {
 
     //Updating the recycler view with the currency rates
     private fun updateRecyclerView(rates: Map<String, String>, codes: List<String>) {
-        val ratesAdapter = CurrencyRatesAdapter(rates, codes)
+        val ratesAdapter =
+            CurrencyRatesAdapter(rates, codes)
         binding.currencyRatesState.adapter = ratesAdapter
         ratesAdapter.notifyDataSetChanged()
 

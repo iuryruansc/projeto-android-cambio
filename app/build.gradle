@@ -1,13 +1,15 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jlleitschuh.gradle.ktlint") version "11.5.0"
-    id("io.gitlab.arturbosch.detekt") version("1.23.0")
+    id("io.gitlab.arturbosch.detekt") version("1.23.6")
+    id("com.google.dagger.hilt.android")
+    id("com.google.devtools.ksp") version("2.0.20-1.0.24")
 }
 
 android {
     namespace = "com.betrye.currencyview"
     compileSdk = 34
+
 
     defaultConfig {
         applicationId = "com.betrye.currencyview"
@@ -29,12 +31,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
-    }
-    ktlint {
-        android.set(true)
-        ignoreFailures.set(true)
     }
 
     detekt {
@@ -42,14 +41,13 @@ android {
         basePath = projectDir.absolutePath
     }
 
-    viewBinding{
+    viewBinding {
         enabled = true
     }
 
     dataBinding {
         enabled = true
     }
-
 }
 
 dependencies {
@@ -61,19 +59,23 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     //  Retrofit core library
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
 
     // Converter for JSON
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
 
     // Coroutines for Android
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1'
 
     // View Model for Kotlin
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4'
     implementation 'androidx.activity:activity-ktx:1.9.1'
     implementation 'androidx.fragment:fragment-ktx:1.8.2'
+
+    // Dagger hilt
+    implementation("com.google.dagger:hilt-android:2.52")
+    ksp "com.google.dagger:hilt-compiler:2.52"
 
     implementation 'androidx.test.espresso:espresso-contrib:3.6.1'
     testImplementation 'junit:junit:4.13.2'

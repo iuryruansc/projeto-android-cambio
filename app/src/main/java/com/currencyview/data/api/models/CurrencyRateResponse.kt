@@ -1,4 +1,4 @@
-package com.betrybe.currencyview.data.api.models
+package com.currencyview.data.api.models
 
 data class CurrencyRateResponse (
     val success: Boolean,

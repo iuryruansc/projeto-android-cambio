@@ -1,4 +1,4 @@
-package com.betrybe.currencyview.data.models
+package com.currencyview.data.models
 
 data class Response<T>(
         var success: Boolean,

@@ -1,8 +1,8 @@
-package com.betrybe.currencyview.data.network
+package com.currencyview.data.network
 
-import com.betrybe.currencyview.data.api.ApiServiceClient
-import com.betrybe.currencyview.data.api.models.CurrencyRateResponse
-import com.betrybe.currencyview.data.api.models.CurrencySymbolResponse
+import com.currencyview.data.api.ApiServiceClient
+import com.currencyview.data.api.models.CurrencyRateResponse
+import com.currencyview.data.api.models.CurrencySymbolResponse
 
 class CurrencyDataSource {
 
@@ -17,7 +17,6 @@ class CurrencyDataSource {
     // Function to fetch currency rates
     suspend fun fetchCurrencyRates(symbol: String): CurrencyRateResponse? {
         val currencyRateResponse = apiService.getLatestRates(symbol)
-
         return currencyRateResponse.body()
     }
 }
