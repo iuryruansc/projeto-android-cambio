@@ -13,25 +13,26 @@ class MainActivityViewModel : ViewModel() {
 
     private val mCurrencyRepository = CurrencyRepository()
 
-    private var _currencySymbols = MutableLiveData<List<String>>()
-    val currencySymbols: LiveData<List<String>>
+    private var _currencySymbols = MutableLiveData<Map<String, String>>()
+    val currencySymbols: LiveData<Map<String, String>>
         get() = _currencySymbols
-
-    private var _currencyFullName = MutableLiveData<List<String>>()
-    val currencyFullName: LiveData<List<String>>
-        get() = _currencyFullName
 
     private var _currencyRates = MutableLiveData<Map<String, String>>()
     val currencyRates: LiveData<Map<String, String>>
         get() = _currencyRates
 
-    private var _isErrorOccurred = MutableStateFlow(false)
-    val isErrorOccurred: MutableStateFlow<Boolean>
-        get() = _isErrorOccurred
+    private var _errorType = MutableLiveData("")
+    val errorType: LiveData<String>
+        get() = _errorType
 
     private var _errorMessage = MutableLiveData("")
     val errorMessage: LiveData<String>
         get() = _errorMessage
+
+    private var _isErrorOccurred = MutableStateFlow(false)
+    val isErrorOccurred: MutableStateFlow<Boolean>
+        get() = _isErrorOccurred
+
 
     // Function to update currency symbols
     fun currenciesSymbols() {
@@ -39,11 +40,11 @@ class MainActivityViewModel : ViewModel() {
             val response = mCurrencyRepository.getCurrencySymbol()
             if (response.success) {
                 val currency = response.data!!
-                _currencySymbols.postValue(currency.currencyType.keys.toList())
-                _currencyFullName.postValue(currency.currencyType.values.toList())
+                _currencySymbols.postValue(currency.currencyType)
                 isErrorOccurred.value = false
             } else {
                 _errorMessage.postValue(response.message)
+                _errorType.postValue("symbol")
                 isErrorOccurred.value = true
             }
         }
@@ -59,6 +60,7 @@ class MainActivityViewModel : ViewModel() {
                 isErrorOccurred.value = false
             } else {
                 _errorMessage.postValue(response.message)
+                _errorType.postValue("rates")
                 isErrorOccurred.value = true
             }
         }

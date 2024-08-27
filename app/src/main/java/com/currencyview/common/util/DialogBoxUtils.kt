@@ -14,7 +14,9 @@ object DialogBoxUtils {
             .setCancelable(false)
             .setPositiveButton(R.string.error_retry) { dialog, _ ->
                 dialog.dismiss()
-                retryAction()
+                retry(times = 3, delayMillis = 1000) {
+                    retryAction()
+                }
             }
             .setNegativeButton(R.string.error_cancel) { dialog, _ ->
                 dialog.dismiss()

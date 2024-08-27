@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainActivityViewModel by viewModels()
     private var selectedCode: String = ""
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+      override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater) //Inflating the layout
         setContentView(binding.root) //Setting the content view
@@ -35,25 +35,12 @@ class MainActivity : AppCompatActivity() {
 
         //Observing the currency symbols live data from view model
         viewModel.currencySymbols.observe(this) { currencySymbols ->
-            updateDropDownMenu(currencySymbols)
+            updateDropDownMenu(currencySymbols.keys.toList())
         }
 
         //Observing the currency rates live data from view model
         viewModel.currencyRates.observe(this) { currencyRates ->
-            if (currencyRates != null) {
-                updateRecyclerView(currencyRates, viewModel.currencyFullName.value!!)
-            }
-        }
-
-        //Observing the error state flow from view model
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isErrorOccurred.collect { isErrorOccurred ->
-                    if (isErrorOccurred) {
-                        showErrorDialog()
-                    }
-                }
-            }
+                updateRecyclerView(currencyRates, viewModel.currencySymbols.value!!.values.toList())
         }
 
         //Apply the function do get the currency rates to the menu items
@@ -65,6 +52,20 @@ class MainActivity : AppCompatActivity() {
                 binding.waitingResponseState.visibility = View.VISIBLE
                 viewModel.currenciesRates(selectedCode)
             }
+
+        //Observing the error state flow from view model
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.isErrorOccurred.collect { isErrorOccurred ->
+                    if (isErrorOccurred) {
+                        when (viewModel.errorType.value) {
+                            "symbol" -> showErrorDialog { viewModel.currenciesSymbols() }
+                            "rates" -> showErrorDialog { viewModel.currenciesRates(selectedCode) }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     //Updating the dropdown menu with the currency codes
@@ -93,8 +94,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     //Creating the error dialog box
-    private fun showErrorDialog() {
+    private fun showErrorDialog(onErrorRetry: () -> Unit) {
         DialogBoxUtils.errorDialogBuilder(this, viewModel.errorMessage.value)
-        { viewModel.currenciesSymbols() }
+        { onErrorRetry() }
     }
 }
