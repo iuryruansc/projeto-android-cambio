@@ -1,7 +1,7 @@
 package com.currencyview.common.util
 
 import android.app.Activity
-import com.betrye.currencyview.R
+import com.currencyview.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 object DialogBoxUtils {

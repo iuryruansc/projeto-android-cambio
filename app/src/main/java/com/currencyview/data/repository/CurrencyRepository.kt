@@ -1,8 +1,8 @@
 package com.currencyview.data.repository
 
-import com.betrye.currencyview.R
-import com.currencyview.data.models.CurrencyType
+import com.currencyview.R
 import com.currencyview.data.models.CurrencyResponse
+import com.currencyview.data.models.CurrencyType
 import com.currencyview.data.network.CurrencyDataSource
 
 class CurrencyRepository {

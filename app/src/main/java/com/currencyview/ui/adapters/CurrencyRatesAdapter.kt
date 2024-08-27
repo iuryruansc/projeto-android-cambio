@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.betrye.currencyview.databinding.CurrencyRecycleItemBinding
+import com.currencyview.databinding.CurrencyRecycleItemBinding
 
 class CurrencyRatesAdapter(
     private val rates: Map<String, String>,

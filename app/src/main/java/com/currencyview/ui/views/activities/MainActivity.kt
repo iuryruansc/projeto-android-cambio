@@ -9,8 +9,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.betrye.currencyview.R
-import com.betrye.currencyview.databinding.ActivityMainBinding
+import com.currencyview.R
+import com.currencyview.databinding.ActivityMainBinding
 import com.currencyview.common.util.DialogBoxUtils
 import com.currencyview.ui.adapters.CurrencyArrayAdapter
 import com.currencyview.ui.adapters.CurrencyRatesAdapter

@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    namespace = "com.betrye.currencyview"
+    namespace = "com.currencyview"
     compileSdk = 34
 
 
     defaultConfig {
-        applicationId = "com.betrye.currencyview"
+        applicationId = "com.currencyview"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
