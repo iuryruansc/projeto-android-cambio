@@ -8,7 +8,8 @@
 * androidx.activity:activity-ktx: 1.9.1
 * androidx.constraintlayout:constraintlayout: 2.1.4
 
-## Networking* com.squareup.retrofit2:retrofit: 2.11.0
+## Networking
+* com.squareup.retrofit2:retrofit: 2.11.0
 * com.squareup.retrofit2:converter-gson: 2.11.0
 
 ## Asynchronous Programming
