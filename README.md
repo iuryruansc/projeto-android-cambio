@@ -2,18 +2,40 @@
 
 This Android application allows users to convert between various currencies.
 
-## Features
+## Table of Contents
+* [Features](#features)
+* [Build Environment](#build-environment)
+* [Dependencies](#dependencies)
+* [API Key](#api-key)
+* [API Documentation](#api-documentation)
+* [Contact](#contact)
+* [Installation and Setup](#installation-and-setup)
+* [Usage](#usage)
+* [Screenshots](#screenshots)
 
+## Features
 * **Comprehensive Currency List:**  Displays a menu of available currencies for selection.
 * **Real-time Conversion:**  Provides instant conversions of 1 unit of the selected currency to other currencies.
 * **User-friendly Interface:**  Designed for easy navigation and intuitive use.
 
+## Build Environment
+* **Kotlin:**  2.0.20
+* **Target SDK:**  35
+* **JVM Target:**  17
+
 ## Dependencies
 
-* **Retrofit (2.9.0):**  For making network requests to fetch currency exchange rates.
-* **Gson (2.9.0):**  For parsing JSON data from the API.
+* **Retrofit (2.11.0):**  For making network requests to fetch currency exchange rates.
+* **Gson (2.11.0):**  For parsing JSON data from the API.
 * **Kotlin Coroutines:**  For managing asynchronous operations.
 * **AndroidX ViewModel:**  For managing UI state and data.
+* **Dagger Hilt:** For providing dependency injection. <br>
+
+*for a detailed list of dependencies and their versions, please refer to [DEPENDENCIES.md](docs/DEPENDENCIES.md)*
+
+## API Key
+* This app uses an external API to fetch currency exchange rates. To ensure fair usage and prevent service disruption, the API key provided has a usage limit of 100 requests per month.
+* If you encounter an error message (Error: 2131685922) indicating that the request limit has been reached, please feel free to contact me through the information provided in the [Contact](#contact) section. I will be happy to provide you with a new API key.
 
 ## API Documentation
 
@@ -53,6 +75,11 @@ This Android application allows users to convert between various currencies.
   "success": true,
   "timestamp": 1519296206
    }
+   
+## Contact
+* **Maintainer:** Iury Ruan
+* **Email:** iuryruansc@gmail.com
+* Feel free to reach out if you have any questions, encounter any issues, or have suggestions for the project.
 
 ## Installation and Setup
 
