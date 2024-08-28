@@ -11,7 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.currencyview.R
 import com.currencyview.databinding.ActivityMainBinding
-import com.currencyview.common.util.DialogBoxUtils
+import com.currencyview.common.util.ui.DialogBoxUtils
 import com.currencyview.ui.adapters.CurrencyArrayAdapter
 import com.currencyview.ui.adapters.CurrencyRatesAdapter
 import com.currencyview.ui.viewmodels.MainActivityViewModel

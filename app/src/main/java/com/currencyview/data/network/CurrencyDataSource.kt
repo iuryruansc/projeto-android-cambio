@@ -1,12 +1,11 @@
 package com.currencyview.data.network
 
+import com.currencyview.data.api.ApiService
 import com.currencyview.data.api.ApiServiceClient
 import com.currencyview.data.api.models.CurrencyRateResponse
 import com.currencyview.data.api.models.CurrencySymbolResponse
 
-class CurrencyDataSource {
-
-    private val apiService = ApiServiceClient.instance
+class CurrencyDataSource(private val apiService: ApiService = ApiServiceClient.instance) {
 
     // Function to fetch currency symbols
     suspend fun fetchCurrenciesSymbols(): CurrencySymbolResponse? {

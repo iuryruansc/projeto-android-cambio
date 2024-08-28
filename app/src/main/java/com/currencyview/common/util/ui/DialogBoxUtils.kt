@@ -1,4 +1,4 @@
-package com.currencyview.common.util
+package com.currencyview.common.util.ui
 
 import android.app.Activity
 import com.currencyview.R

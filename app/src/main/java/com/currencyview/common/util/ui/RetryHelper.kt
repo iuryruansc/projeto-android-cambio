@@ -1,4 +1,4 @@
-package com.currencyview.common.util
+package com.currencyview.common.util.ui
 
 fun <T> retry(
     times: Int,

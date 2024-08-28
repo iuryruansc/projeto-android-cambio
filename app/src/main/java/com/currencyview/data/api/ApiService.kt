@@ -1,5 +1,6 @@
 package com.currencyview.data.api
 
+import com.currencyview.data.api.models.CurrencyRateResponse
 import com.currencyview.data.api.models.CurrencySymbolResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -13,6 +14,6 @@ interface ApiService {
     @GET("latest")
     suspend fun getLatestRates (
         @Query("base") base: String
-    ): Response<com.currencyview.data.api.models.CurrencyRateResponse>
+    ): Response<CurrencyRateResponse>
 
 }
