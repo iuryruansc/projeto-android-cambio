@@ -29,7 +29,7 @@ This Android application allows users to convert between various currencies.
 * **Gson (2.11.0):**  For parsing JSON data from the API.
 * **Kotlin Coroutines:**  For managing asynchronous operations.
 * **AndroidX ViewModel:**  For managing UI state and data.
-* **Dagger Hilt:** For providing dependency injection. <br>
+* **Dagger Hilt:** For providing dependency injection. (*to be implemented*) <br>
 
 *for a detailed list of dependencies and their versions, please refer to [DEPENDENCIES.md](docs/DEPENDENCIES.md)*
 
