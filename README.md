@@ -29,13 +29,13 @@ This Android application allows users to convert between various currencies.
 * **Gson (2.11.0):**  For parsing JSON data from the API.
 * **Kotlin Coroutines:**  For managing asynchronous operations.
 * **AndroidX ViewModel:**  For managing UI state and data.
-* **Dagger Hilt:** For providing dependency injection. <br>
+* **Dagger Hilt:** For providing dependency injection. (*to be implemented*) <br>
 
 *for a detailed list of dependencies and their versions, please refer to [DEPENDENCIES.md](docs/DEPENDENCIES.md)*
 
 ## API Key
 * This app uses an external API to fetch currency exchange rates. To ensure fair usage and prevent service disruption, the API key provided has a usage limit of 100 requests per month.
-* If you encounter an error message (Error: 2131685922) indicating that the request limit has been reached, please feel free to contact me through the information provided in the [Contact](#contact) section. I will be happy to provide you with a new API key.
+* If you encounter an error message (Error: 2131685922 or timeout) indicating that the request limit has been reached, please feel free to contact me through the information provided in the [Contact](#contact) section. I will be happy to provide you with a new API key.
 
 ## API Documentation
 
