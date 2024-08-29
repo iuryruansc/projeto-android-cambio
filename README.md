@@ -22,7 +22,8 @@ This Android application allows users to convert between various currencies.
 * **User-friendly Interface:**  Designed for easy navigation and intuitive use.
 
 ## App Preview
-
+* You can preview the app using the following link (opens in the current page)
+* If you want to open it in a new tab use CTRL+click (on Windows and Linux) or CMD+click (on MacOS)
 * [View Currency Converter on Appetize.io](https://appetize.io/app/b_scyi4u3cjk75gv3ihhvy2iey6u)
 
 * **Note:** This app preview is hosted on Appetize.io, which has a monthly usage limit. If you encounter any issues accessing the preview, please refer to the screenshots below for a visual representation of the app.
